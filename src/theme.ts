@@ -18,7 +18,7 @@ const theme = createTheme({
     },
     text: {
       primary: '#FCF7F8',   // Snow
-      secondary: '#00524B', // Dark Green
+      secondary: 'grey',    // Grey
     },
   },
 
