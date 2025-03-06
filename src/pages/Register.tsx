@@ -1,18 +1,46 @@
+import { useNavigate } from 'react-router-dom';
 import { useState } from "react";
 
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 
+import api from '../api';
+
 const Register = () => {
 
-    const [ nome, setNome ] = useState("");
-    const [ email, setEmail ] = useState("");
-    const [ senha, setSenha ] = useState("");
-    const [ senhaConfirm, setSenhaConfirm ] = useState(""); 
+    const navigate = useNavigate();
 
-    const Register = () => {
-        //...
+    const [ name, setName ] = useState("");
+    const [ email, setEmail ] = useState("");
+    const [ password, setPassword ] = useState("");
+    const [ passwordConfirm, setPasswordConfirm ] = useState(""); 
+
+    const resetFields = () => {
+        setName("");
+        setEmail("");
+        setPassword("");
+        setPasswordConfirm("");
+    };
+
+    async function register() {
+        const payload = {
+            "email": email,
+            "name": name,
+            "password": password,
+        };
+          
+        try {
+            const response = await api.post('/api/users/register/', payload);
+            console.log(response);
+
+            resetFields();
+            navigate('/login');
+
+        } catch (error) {
+            console.error("Erro ao cadastrar: ", error);
+    
+        }
     };
 
     return(
@@ -66,9 +94,9 @@ const Register = () => {
                     variant="outlined"
                     margin="dense"
                     label="Nome & Sobrenome"
-                    value={nome}
+                    value={name}
                     fullWidth
-                    onChange={(e) => setNome(e.target.value)}
+                    onChange={(e) => setName(e.target.value)}
 
                     sx={{ 
                         input: { color: 'black' },
@@ -92,9 +120,9 @@ const Register = () => {
                     variant="outlined"
                     margin="dense"
                     label="Senha"
-                    value={senha}
+                    value={password}
                     fullWidth
-                    onChange={(e) => setSenha(e.target.value)}
+                    onChange={(e) => setPassword(e.target.value)}
 
                     sx={{ 
                         input: { color: 'black' },
@@ -105,9 +133,9 @@ const Register = () => {
                     variant="outlined"
                     margin="dense"
                     label="Confirmar Senha"
-                    value={senhaConfirm}
+                    value={passwordConfirm}
                     fullWidth
-                    onChange={(e) => setSenhaConfirm(e.target.value)}
+                    onChange={(e) => setPasswordConfirm(e.target.value)}
 
                     sx={{ 
                         input: { color: 'black' },
@@ -127,7 +155,7 @@ const Register = () => {
                 <Button
                     variant="contained"
                 
-                    onClick={Register}
+                    onClick={() => register()}
                     fullWidth
 
                     sx={{

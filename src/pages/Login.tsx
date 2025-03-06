@@ -1,17 +1,44 @@
+import { useNavigate } from 'react-router-dom';
 import { useState } from "react";
 
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 
+import api from '../api';
+
 const Login = () => {
 
-    const [ nomeEmail, setNomeEmail ] = useState("");
-    const [ senha, setSenha ] = useState("");
+    const navigate = useNavigate();
 
-    const Login = () => {
-        //...
-    };
+    const [ email, setEmail ] = useState("");
+    const [ password, setPassword ] = useState("");
+
+    async function login() {
+        try {
+          // Faz a requisição ao endpoint para obter os tokens
+          const response = await api.post('api/users/token/', { email, password });
+          
+          // Se chegar até aqui sem lançar exceção, significa que deu certo (status 2xx).
+          const { access, refresh } = response.data;
+          
+          // Salva tokens no localStorage, se existirem
+          if (access) {
+            localStorage.setItem('access_token', access);
+          }
+          if (refresh) {
+            localStorage.setItem('refresh_token', refresh);
+          }
+    
+          // Redireciona para a dashboard
+          navigate('/dashboard');
+    
+        } catch (error) {
+          // Se cair no catch, significa que a requisição deu erro
+          console.error(error);
+          alert('Falha no login. Verifique suas credenciais ou tente novamente.');
+        }
+      };
 
     return(
         <Box
@@ -60,10 +87,10 @@ const Login = () => {
                 <TextField 
                     variant="outlined"
                     margin="dense"
-                    label="Nome ou E-mail"
-                    value={nomeEmail}
+                    label="E-mail"
+                    value={email}
                     fullWidth
-                    onChange={(e) => setNomeEmail(e.target.value)}
+                    onChange={(e) => setEmail(e.target.value)}
 
                     sx={{ 
                         input: { color: 'black' },
@@ -74,9 +101,9 @@ const Login = () => {
                     variant="outlined"
                     margin="dense"
                     label="Senha"
-                    value={senha}
+                    value={password}
                     fullWidth
-                    onChange={(e) => setSenha(e.target.value)}
+                    onChange={(e) => setPassword(e.target.value)}
 
                     sx={{ 
                         input: { color: 'black' },
@@ -96,7 +123,7 @@ const Login = () => {
                 <Button
                     variant="contained"
                     
-                    onClick={Login}
+                    onClick={() => login()}
                     fullWidth
                     
                     sx={{
