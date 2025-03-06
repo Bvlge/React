@@ -49,7 +49,7 @@ const Login = () => {
           }
     
           resetFields();
-          navigate('/dashboard');
+          navigate('/profile');
     
         } catch (error) {
           // Se cair no catch, significa que a requisição deu erro
