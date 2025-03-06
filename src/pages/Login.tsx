@@ -4,6 +4,10 @@ import { useState } from "react";
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
+import IconButton from '@mui/material/IconButton';
+import InputAdornment from '@mui/material/InputAdornment';
+import Visibility from '@mui/icons-material/Visibility';
+import VisibilityOff from '@mui/icons-material/VisibilityOff';
 
 import api from '../api';
 
@@ -13,6 +17,20 @@ const Login = () => {
 
     const [ email, setEmail ] = useState("");
     const [ password, setPassword ] = useState("");
+
+    // Estado para controlar se a senha está visível ou não
+    const [ showPassword, setShowPassword ] = useState(false);
+
+    // Função para alternar a visibilidade da senha
+    const handleClickShowPassword = () => {
+        setShowPassword((prev) =>  !prev);
+    };
+
+    function resetFields () {
+        setEmail('');
+        setPassword('');
+        setShowPassword(false);
+    }
 
     async function login() {
         try {
@@ -30,7 +48,7 @@ const Login = () => {
             localStorage.setItem('refresh_token', refresh);
           }
     
-          // Redireciona para a dashboard
+          resetFields();
           navigate('/dashboard');
     
         } catch (error) {
@@ -97,17 +115,32 @@ const Login = () => {
                         label: { color: 'grey'  } 
                     }}
                 />
-                <TextField 
+                <TextField
                     variant="outlined"
                     margin="dense"
                     label="Senha"
+                    // Alterna o tipo do campo de acordo com o estado 'showPassword'
+                    type={showPassword ? 'text' : 'password'}
                     value={password}
                     fullWidth
                     onChange={(e) => setPassword(e.target.value)}
-
-                    sx={{ 
+                    // Cria o ícone na parte final do input para exibir/ocultar a senha
+                    InputProps={{
+                        endAdornment: (
+                        <InputAdornment position="end">
+                            <IconButton
+                            aria-label="toggle password visibility"
+                            onClick={handleClickShowPassword}
+                            edge="end"
+                            >
+                            {showPassword ? <VisibilityOff /> : <Visibility />}
+                            </IconButton>
+                        </InputAdornment>
+                        )
+                    }}
+                    sx={{
                         input: { color: 'black' },
-                        label: { color: 'grey'  } 
+                        label: { color: 'grey' }
                     }}
                 />
             </Box>
